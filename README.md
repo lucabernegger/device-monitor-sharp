@@ -1,2 +1,9 @@
 # device-monitor-sharp
-Simple Linux device monitoring
+Simple .NET 5 console Application to get some basic system information like CPU load, memory,... 
+This project is in an very early stage of development, so some things are a bit hacky currently.
+
+## Plans
+- Add some way to continuously deliver the json with current up to date values (simple Webserver?)
+- Implment more data
+- Website to display json data?
+
