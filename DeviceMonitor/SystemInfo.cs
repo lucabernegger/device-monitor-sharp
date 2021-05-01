@@ -90,8 +90,13 @@ namespace DeviceMonitor
         private void UpdateNetworkData()
         {
             var output = ShellHelper.Cmd("netstat -nao | find /i \" * \" /c");
+                             
+            var tcpConnections = 0;
 
-            var tcpConnections = Convert.ToInt32(ShellHelper.Cmd("netstat -nao | find /i \"*\" /c"));
+            if (IsWindows)
+                tcpConnections = Convert.ToInt32(ShellHelper.Cmd("netstat -nao | find /i \"*\" /c"));
+            else
+                tcpConnections = Convert.ToInt32(ShellHelper.Bash("netstat -ant | grep ESTABLISHED | wc -l"));
             Network = NetworkInfo.Parse(NetworkInterface.GetAllNetworkInterfaces(), tcpConnections);
         }
         public string GetAsJson()
