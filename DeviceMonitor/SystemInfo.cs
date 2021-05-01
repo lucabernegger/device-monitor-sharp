@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using DeviceMonitor.DeviceInfo;
 using DeviceMonitor.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Threading;
 using DriveInfo = DeviceMonitor.DeviceInfo.DriveInfo;
 
 namespace DeviceMonitor

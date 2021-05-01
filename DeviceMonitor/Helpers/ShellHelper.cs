@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace DeviceMonitor.Helpers
 {
@@ -30,20 +25,15 @@ namespace DeviceMonitor.Helpers
             return result;
         }
 
-        public static string Cmd(this string cmd)
+        public static string Cmd(string cmd)
         {
-            var output = "";
-
-            var info = new ProcessStartInfo();
-            info.FileName = "cmd.exe";
-            info.Arguments = $"/C \"{cmd}\"";
-            info.RedirectStandardOutput = true;
-
-            using (var process = Process.Start(info))
+            var info = new ProcessStartInfo
             {
-                return output = process.StandardOutput.ReadToEnd();
-            }
-            
+                FileName = "cmd.exe", Arguments = $"/C \"{cmd}\"", RedirectStandardOutput = true
+            };
+
+            using var process = Process.Start(info);
+            return process?.StandardOutput.ReadToEnd();
         }
     }
 }

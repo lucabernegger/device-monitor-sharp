@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DeviceMonitor.Helpers;
 using Newtonsoft.Json.Linq;
 
@@ -50,7 +47,7 @@ namespace DeviceMonitor.DeviceInfo
                     Available = UnitConverterHelper.ConvertToUnit(availableString,Unit.Gigabyte),
                     Identifier = identString,
                     Size = UnitConverterHelper.ConvertToUnit(sizeString, Unit.Gigabyte),
-                    UsedPercentage = Convert.ToDouble(usedPercentSting.Remove(usedPercentSting.Length-1,1)),
+                    UsedPercentage = Convert.ToDouble(usedPercentSting?.Remove(usedPercentSting.Length-1,1)),
                     Used = UnitConverterHelper.ConvertToUnit(usedSting, Unit.Gigabyte),
                 });
 
