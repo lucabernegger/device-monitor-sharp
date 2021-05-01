@@ -38,15 +38,16 @@ namespace DeviceMonitor.Helpers
 
         public static string Powershell(string cmd)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = @"powershell.exe";
-            startInfo.Arguments = @cmd;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
-            startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
-            Process process = new Process();
-            process.StartInfo = startInfo;
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = @"powershell.exe",
+                Arguments = @cmd,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            Process process = new Process {StartInfo = startInfo};
             process.Start();
             return process.StandardOutput.ReadToEnd();
         }

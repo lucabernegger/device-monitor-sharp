@@ -63,8 +63,8 @@ namespace DeviceMonitor.DeviceInfo
                     driveInfos.Add(new()
                     {
                         Identifier = drive.VolumeLabel,
-                        Available = drive.AvailableFreeSpace / 1048576D,
-                        Size = drive.TotalSize / 104856D,
+                        Available = Math.Round((double)drive.AvailableFreeSpace / 1000000000),
+                        Size = Math.Round((double)drive.TotalSize / 1000000000),
                         Used = drive.TotalSize - drive.AvailableFreeSpace,
                         UsedPercentage = Math.Round(((double)(drive.TotalSize-drive.AvailableFreeSpace)/drive.TotalSize)/1048576D)
                     });
