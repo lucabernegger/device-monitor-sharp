@@ -1,14 +1,22 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace DeviceMonitor
 {
     class Program
     {
-        static void Main()
+        static async Task Main()
         {
             var x = new SystemInfo();
             x.UpdateData();
-            Console.WriteLine(x.GetAsJson());
+            var server = new Webserver("http://localhost:8010/", () =>
+            {
+                x.UpdateData();
+
+                return x.GetAsJson();
+            });
+            await server.Start();
+
 
         }
     }
