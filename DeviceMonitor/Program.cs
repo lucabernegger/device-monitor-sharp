@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -15,7 +16,7 @@ namespace DeviceMonitor
 
             var info = new SystemInfo();
             info.UpdateData();
-            var server = new Webserver("http://localhost:8010/", () =>
+            var server = new Webserver(Settings.Url, () =>
             {
                 info.UpdateData();
                 var data = new WebResponse()
@@ -50,6 +51,11 @@ namespace DeviceMonitor
                 await File.WriteAllTextAsync("settings.json", JsonConvert.SerializeObject(new Settings(), Formatting.Indented));
             }
             Settings = JsonConvert.DeserializeObject<Settings>(await File.ReadAllTextAsync("settings.json"));
+            if (Settings != null && Settings.Url.Last() != '/')
+            {
+                Settings.Url += "/";
+                await File.WriteAllTextAsync("settings.json", JsonConvert.SerializeObject(Settings, Formatting.Indented));
+            }
             if (Settings != null && Settings.EncryptionKey == null && Settings.EncryptionEnabled)
             {
                 using var rng = new RNGCryptoServiceProvider();
