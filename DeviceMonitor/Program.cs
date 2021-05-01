@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using System.Timers;
 using Newtonsoft.Json;
 
 namespace DeviceMonitor
@@ -39,6 +40,16 @@ namespace DeviceMonitor
                     Data = info
                 }); 
             });
+            var timer = new Timer(10000);
+            timer.Start();
+            timer.Elapsed += (sender, args) =>
+            {
+                    Database.Add(new()
+                    {
+                        IsEncrypted = false,
+                        Data = info
+                    });
+            };
             await server.Start();
 
 
