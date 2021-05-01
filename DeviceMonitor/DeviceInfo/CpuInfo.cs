@@ -9,8 +9,9 @@ namespace DeviceMonitor.DeviceInfo
         /// Current Cpu load in percent
         /// </summary>
         public double TotalPercentage { get; set; }
+        public int TotalThreads { get; set; }
 
-        public static CpuInfo Parse(string output,OSPlatform os)
+        public static CpuInfo Parse(string output,int totalThreads,OSPlatform os)
         {
             if (os == OSPlatform.Windows)
             {
@@ -18,7 +19,8 @@ namespace DeviceMonitor.DeviceInfo
 
                 return new()
                 {
-                    TotalPercentage = Convert.ToDouble(lines[1])
+                    TotalPercentage = Convert.ToDouble(lines[1]),
+                    TotalThreads = totalThreads
                 };
             }
 
@@ -26,7 +28,8 @@ namespace DeviceMonitor.DeviceInfo
             {
                 return new()
                 {
-                    TotalPercentage = Convert.ToDouble(output.Replace("%", string.Empty))
+                    TotalPercentage = Convert.ToDouble(output.Replace("%", string.Empty))      ,
+                    TotalThreads = totalThreads
                 };
             }
 

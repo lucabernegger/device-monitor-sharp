@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -31,7 +32,7 @@ namespace DeviceMonitor
         /// </summary>
         public CpuInfo Cpu { get; set; }
 
-        public List<NetworkInfo> Network { get; set; }
+        public NetworkInfo Network { get; set; }
 
         public void UpdateData()
         {
@@ -75,19 +76,23 @@ namespace DeviceMonitor
             if (IsWindows)
             {
                 var output = ShellHelper.Cmd("wmic cpu get loadpercentage");
-                Cpu = CpuInfo.Parse(output,OSPlatform.Windows);
+                var threadCount = Convert.ToInt32(ShellHelper.Powershell("(Get-Process|Select-Object -ExpandProperty Threads).Count").Trim());
+                Cpu = CpuInfo.Parse(output, threadCount, OSPlatform.Windows);
             }
             else
             {
                 var output = ShellHelper.Bash("top -bn1 | grep load | awk '{printf \"%.2f%%\\t\\t\\n\", $(NF-2)}'");
-                Cpu = CpuInfo.Parse(output,OSPlatform.Linux);
+                Cpu = CpuInfo.Parse(output,0,OSPlatform.Linux);
             }
             
         }
 
         private void UpdateNetworkData()
         {
-            Network = NetworkInfo.Parse(NetworkInterface.GetAllNetworkInterfaces());
+            var output = ShellHelper.Cmd("netstat -nao | find /i \" * \" /c");
+
+            var tcpConnections = Convert.ToInt32(ShellHelper.Cmd("netstat -nao | find /i \"*\" /c"));
+            Network = NetworkInfo.Parse(NetworkInterface.GetAllNetworkInterfaces(), tcpConnections);
         }
         public string GetAsJson()
         {

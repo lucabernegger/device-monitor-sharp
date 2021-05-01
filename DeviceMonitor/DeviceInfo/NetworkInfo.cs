@@ -1,24 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.NetworkInformation;
+using DeviceMonitor.Helpers;
 
 namespace DeviceMonitor.DeviceInfo
 {
     public class NetworkInfo
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public long BytesReceived { get; set; }
-        public long BytesSent { get; set; }
-        public long IncomingErrors { get; set; }
-        public long OutgoingErrors { get; set; }
-        public long OutgoingDiscarded { get; set; }
-        public bool IsReceiveOnly { get; set; }
-        public List<Ip> Ips { get; set; }
+        /// <summary>
+        /// List of network adapters 
+        /// </summary>
+        public List<NetworkAdapter> NetworkAdapters { get; set; }
 
-        public static List<NetworkInfo> Parse(NetworkInterface[] networkInterfaces)
+        /// <summary>
+        /// Current TCP connection count
+        /// </summary>
+        public int TcpConnections { get; set; }
+
+        public static NetworkInfo Parse(NetworkInterface[] networkInterfaces,int tcpConnections)
         {
-            var networkInfos = new List<NetworkInfo>();
-
+            var networkAdapters = new List<NetworkAdapter>();
+            
             foreach (var networkInterface in networkInterfaces)
             {
                 var ips = new List<Ip>();
@@ -35,7 +37,7 @@ namespace DeviceMonitor.DeviceInfo
                 }
 
                 var ipStats = networkInterface.GetIPStatistics();
-                networkInfos.Add(new()
+                networkAdapters.Add(new()
                 {
                     BytesReceived = ipStats.BytesReceived,
                     BytesSent = ipStats.BytesSent,
@@ -45,16 +47,35 @@ namespace DeviceMonitor.DeviceInfo
                     Description = networkInterface.Description,
                     IsReceiveOnly = networkInterface.IsReceiveOnly,
                     Name = networkInterface.Name,
-                    Ips = ips
+                    Ips = ips,
+                    TcpConnectionCount = tcpConnections
                 });
             }
 
-            return networkInfos;
+            return new()
+            {
+                NetworkAdapters = networkAdapters,
+                TcpConnections = tcpConnections
+            };
         }
     }
 
     public class Ip
     {
         public string Address { get; set; }
+    }
+
+    public class NetworkAdapter
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public long BytesReceived { get; set; }
+        public long BytesSent { get; set; }
+        public long IncomingErrors { get; set; }
+        public long OutgoingErrors { get; set; }
+        public long OutgoingDiscarded { get; set; }
+        public bool IsReceiveOnly { get; set; }
+        public int TcpConnectionCount { get; set; }
+        public List<Ip> Ips { get; set; }
     }
 }
