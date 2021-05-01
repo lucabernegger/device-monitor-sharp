@@ -89,11 +89,8 @@ namespace DeviceMonitor
 
         private void UpdateNetworkData()
         {
-            var output = ShellHelper.Cmd("netstat -nao | find /i \" * \" /c");
-                             
-            var tcpConnections = 0;
-
-            tcpConnections = Convert.ToInt32(IsWindows ? ShellHelper.Cmd("netstat -nao | find /i \"*\" /c") : ShellHelper.Bash("netstat -ant | grep ESTABLISHED | wc -l"));
+     
+            var tcpConnections = Convert.ToInt32(IsWindows ? ShellHelper.Cmd("netstat -nao | find /i \"*\" /c") : ShellHelper.Bash("netstat -ant | grep ESTABLISHED | wc -l"));
             Network = NetworkInfo.Parse(NetworkInterface.GetAllNetworkInterfaces(), tcpConnections);
         }
         public string GetAsJson()
