@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace DeviceMonitor.Helpers
 {
     public static class ShellHelper
     {
-        public static string Bash(this string cmd)
+        public static string Bash(string cmd)
         {
             var escapedArgs = cmd.Replace("\"", "\\\"");
 
@@ -28,6 +23,17 @@ namespace DeviceMonitor.Helpers
             string result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
             return result;
+        }
+
+        public static string Cmd(string cmd)
+        {
+            var info = new ProcessStartInfo
+            {
+                FileName = "cmd.exe", Arguments = $"/C \"{cmd}\"", RedirectStandardOutput = true
+            };
+
+            using var process = Process.Start(info);
+            return process?.StandardOutput.ReadToEnd();
         }
     }
 }

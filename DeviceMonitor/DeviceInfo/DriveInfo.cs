@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DeviceMonitor.Helpers;
 using Newtonsoft.Json.Linq;
 
@@ -50,7 +47,7 @@ namespace DeviceMonitor.DeviceInfo
                     Available = UnitConverterHelper.ConvertToUnit(availableString,Unit.Gigabyte),
                     Identifier = identString,
                     Size = UnitConverterHelper.ConvertToUnit(sizeString, Unit.Gigabyte),
-                    UsedPercentage = Convert.ToDouble(usedPercentSting.Remove(usedPercentSting.Length-1,1)),
+                    UsedPercentage = Convert.ToDouble(usedPercentSting?.Remove(usedPercentSting.Length-1,1)),
                     Used = UnitConverterHelper.ConvertToUnit(usedSting, Unit.Gigabyte),
                 });
 
@@ -58,9 +55,21 @@ namespace DeviceMonitor.DeviceInfo
             return driveInfos;
         }
 
-        public DriveInfo Parse(JObject obj)
+        public static List<DriveInfo> Parse(System.IO.DriveInfo[] drives)
         {
-            return new();
+            var driveInfos = new List<DriveInfo>();
+            foreach (var drive in drives)
+            {
+                    driveInfos.Add(new()
+                    {
+                        Identifier = drive.VolumeLabel,
+                        Available = drive.AvailableFreeSpace / 1048576D,
+                        Size = drive.TotalSize / 104856D,
+                        Used = drive.TotalSize - drive.AvailableFreeSpace,
+                        UsedPercentage = Math.Round(((double)(drive.TotalSize-drive.AvailableFreeSpace)/drive.TotalSize)/1048576D)
+                    });
+            }
+            return driveInfos;
         }
     }
 }
