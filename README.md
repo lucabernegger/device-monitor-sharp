@@ -26,6 +26,6 @@ You can acces the data via a simple http-request to the url specified in your se
 - ``` from ```: UNIX-Timestamp from which date until now you want the data (sorted from newest to oldest)
 - ``` limit ```: You can specify a limit on how much entries you want to get returned (sorted from newest to oldest)
 
-### Opensource Projects used
+## Opensource Projects used
 - LiteDB
 - Newtonsoft.JSON
