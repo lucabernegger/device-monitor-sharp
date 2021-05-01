@@ -9,7 +9,7 @@ namespace DeviceMonitor.Helpers
 {
     public static class ShellHelper
     {
-        public static string Bash(this string cmd)
+        public static string Bash(string cmd)
         {
             var escapedArgs = cmd.Replace("\"", "\\\"");
 
@@ -28,6 +28,22 @@ namespace DeviceMonitor.Helpers
             string result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
             return result;
+        }
+
+        public static string Cmd(this string cmd)
+        {
+            var output = "";
+
+            var info = new ProcessStartInfo();
+            info.FileName = "cmd.exe";
+            info.Arguments = $"/C \"{cmd}\"";
+            info.RedirectStandardOutput = true;
+
+            using (var process = Process.Start(info))
+            {
+                return output = process.StandardOutput.ReadToEnd();
+            }
+            
         }
     }
 }

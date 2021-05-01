@@ -66,12 +66,13 @@ namespace DeviceMonitor
         {
             if (IsWindows)
             {
-                
+                var output = ShellHelper.Cmd("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /Value");
+                Ram = MemoryInfo.Parse(output,OSPlatform.Windows);
             }
             else
             {
                var output = ShellHelper.Bash("free -m");
-               Ram = MemoryInfo.Parse(output); 
+               Ram = MemoryInfo.Parse(output,OSPlatform.Linux); 
             }
             
         }
@@ -79,21 +80,13 @@ namespace DeviceMonitor
         {
             if (IsWindows)
             {
-                using (PerformanceCounter systemCpuUsage =
-                    new("Processor", "% Processor Time", "_Total"))
-                {
-                    var first = systemCpuUsage.NextValue();
-                    Cpu = new()
-                    {
-                        TotalPercentage = systemCpuUsage.NextValue()
-                    };
-
-                }
+                var output = ShellHelper.Cmd("wmic cpu get loadpercentage");
+                Cpu = CpuInfo.Parse(output,OSPlatform.Windows);
             }
             else
             {
-                  var output = ShellHelper.Bash("top -bn1 | grep load | awk '{printf \"%.2f%%\\t\\t\\n\", $(NF-2)}'");
-                Cpu = CpuInfo.Parse(output);
+                var output = ShellHelper.Bash("top -bn1 | grep load | awk '{printf \"%.2f%%\\t\\t\\n\", $(NF-2)}'");
+                Cpu = CpuInfo.Parse(output,OSPlatform.Linux);
             }
             
         }
