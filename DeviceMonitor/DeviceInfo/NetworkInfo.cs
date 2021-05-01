@@ -33,13 +33,15 @@ namespace DeviceMonitor.DeviceInfo
                         });
                     }
                 }
+
+                var ipStats = networkInterface.GetIPStatistics();
                 networkInfos.Add(new()
                 {
-                    BytesReceived = networkInterface.GetIPStatistics().BytesReceived,
-                    BytesSent = networkInterface.GetIPStatistics().BytesSent,
-                    IncomingErrors = networkInterface.GetIPStatistics().IncomingPacketsWithErrors,
-                    OutgoingErrors = networkInterface.GetIPStatistics().OutgoingPacketsWithErrors,
-                    OutgoingDiscarded = networkInterface.GetIPStatistics().OutgoingPacketsDiscarded,
+                    BytesReceived = ipStats.BytesReceived,
+                    BytesSent = ipStats.BytesSent,
+                    IncomingErrors = ipStats.IncomingPacketsWithErrors,
+                    OutgoingErrors = ipStats.OutgoingPacketsWithErrors,
+                    OutgoingDiscarded = ipStats.OutgoingPacketsDiscarded,
                     Description = networkInterface.Description,
                     IsReceiveOnly = networkInterface.IsReceiveOnly,
                     Name = networkInterface.Name,
