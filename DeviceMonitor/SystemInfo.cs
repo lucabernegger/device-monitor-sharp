@@ -10,6 +10,8 @@ using DeviceMonitor.DeviceInfo;
 using DeviceMonitor.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
+using System.Threading;
 using DriveInfo = DeviceMonitor.DeviceInfo.DriveInfo;
 
 namespace DeviceMonitor
@@ -17,7 +19,7 @@ namespace DeviceMonitor
     class SystemInfo
     {
         /// <summary>
-        /// Check if is running on Windows
+        /// Check if OS is windows
         /// </summary>
         public bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         /// <summary>
@@ -64,7 +66,7 @@ namespace DeviceMonitor
         {
             if (IsWindows)
             {
-
+                
             }
             else
             {
@@ -77,7 +79,16 @@ namespace DeviceMonitor
         {
             if (IsWindows)
             {
-               
+                using (PerformanceCounter systemCpuUsage =
+                    new("Processor", "% Processor Time", "_Total"))
+                {
+                    var first = systemCpuUsage.NextValue();
+                    Cpu = new()
+                    {
+                        TotalPercentage = systemCpuUsage.NextValue()
+                    };
+
+                }
             }
             else
             {

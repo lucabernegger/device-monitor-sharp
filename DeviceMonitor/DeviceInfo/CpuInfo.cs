@@ -11,13 +11,13 @@ namespace DeviceMonitor.DeviceInfo
         /// <summary>
         /// Current Cpu load in percent
         /// </summary>
-        public double LoadPercentage { get; set; }
+        public double TotalPercentage { get; set; }
 
         public static CpuInfo Parse(string output)
         {
             return new()
             {
-                LoadPercentage = Convert.ToDouble(output.Replace("%", string.Empty))
+                TotalPercentage = Convert.ToDouble(output.Replace("%", string.Empty))
             };
         }
     }
