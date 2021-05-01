@@ -83,7 +83,7 @@ namespace DeviceMonitor
                 await File.WriteAllTextAsync("settings.json", JsonConvert.SerializeObject(Settings, Formatting.Indented));
             }
 
-            if (Settings != null && Settings.EncryptionKey == null && Settings.EncryptionEnabled)
+            if (Settings is not null && Settings.EncryptionKey == null && Settings.EncryptionEnabled)
             {
                 using var rng = new RNGCryptoServiceProvider();
                 byte[] tokenData = new byte[32];

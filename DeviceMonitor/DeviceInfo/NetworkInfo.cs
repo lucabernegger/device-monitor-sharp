@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.NetworkInformation;
-using DeviceMonitor.Helpers;
 
 namespace DeviceMonitor.DeviceInfo
 {
