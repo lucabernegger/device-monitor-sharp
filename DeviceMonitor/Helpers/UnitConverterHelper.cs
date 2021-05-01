@@ -109,5 +109,11 @@ namespace DeviceMonitor.Helpers
 
             return 0;
         }
+        public static DateTime ConvertTimeStampToDateTime(double unixTimeStamp)
+        {
+            var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
+        }
     }
 }
