@@ -18,7 +18,7 @@ namespace DeviceMonitor
         {
             using var db = new LiteDatabase("data.db");
             var col = db.GetCollection<WebResponse>("data");
-            if (limit != -1)
+            if (limit != -1 && limit != 0)
             {
                 return col.Query().Where(o => o.Time >= date).OrderByDescending(o=>o.Time).Limit(limit).ToList();
 

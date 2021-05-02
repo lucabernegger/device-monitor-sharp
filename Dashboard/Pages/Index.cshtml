@@ -1,0 +1,167 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+
+}
+<div class="container">
+    <div class="text-center h3 mt-4">Memory (RAM)</div>
+    <canvas id="memoryChart" class="w-100"></canvas>
+    <hr />
+    <div class="text-center h3 mt-4">CPU</div>
+    <canvas id="cpu1Chart" class="w-100 mt-3"></canvas>
+    <canvas id="cpu2Chart" class="w-100 mt-3"></canvas>
+    <canvas id="cpu3Chart" class="w-100 mt-3"></canvas>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js" integrity="sha512-VMsZqo0ar06BMtg0tPsdgRADvl0kDHpTbugCBBrL55KmucH6hP9zWdLIWY//OTfMnzz6xWQRxQqsUFefwHuHyg==" crossorigin="anonymous"></script>
+
+<script>
+    var memoryCtx = document.getElementById('memoryChart').getContext('2d');
+    var cpu1Ctx = document.getElementById('cpu1Chart').getContext('2d');
+    var cpu2Ctx = document.getElementById('cpu2Chart').getContext('2d');
+    var cpu3Ctx = document.getElementById('cpu3Chart').getContext('2d');
+    var charts = []
+    var time = (Date.now() / 1000 - 600);
+    loadCharts();
+    setInterval(() => {
+            loadCharts();
+        },
+        60000);
+    function loadCharts() {
+        charts.forEach((item) => {
+            item.destroy();
+        });
+        $.getJSON("/api/data/Memory/" + time + "/0",
+            function (data) {
+               charts.push(new Chart(memoryCtx,
+                    {
+                        type: 'line',
+                        data: {
+                            labels: data.times,
+                            datasets: [
+                                {
+                                    label: 'Used RAM (MB)',
+                                    data: data.usedMemory,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)'
+                                    ],
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Used Swap (MB)',
+                                    data: data.usedSwap,
+                                    backgroundColor: [
+                                        'rgba(255, 159, 64, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: data.totalMemory,
+
+                                }
+                            }
+                        }
+                    }));
+            });
+        $.getJSON("/api/data/Cpu/" + time + "/0",
+            function (data) {
+                charts.push(new Chart(cpu1Ctx,
+                    {
+                        type: 'line',
+                        data: {
+                            labels: data.times,
+                            datasets: [
+                                {
+                                    label: 'Total CPU load (%)',
+                                    data: data.totalPercentage,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100
+
+                                }
+                            }
+                        }
+                    }));
+                charts.push(new Chart(cpu2Ctx,
+                    {
+                        type: 'line',
+                        data: {
+                            labels: data.times,
+                            datasets: [
+                                {
+                                    label: 'Clock speed',
+                                    data: data.clockSpeed,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)'
+                                    ],
+                                    color: ["#ffff"],
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                }
+                            }
+                        }
+                    }));
+                charts.push(new Chart(cpu3Ctx,
+                    {
+                        type: 'line',
+                        data: {
+                            labels: data.times,
+                            datasets: [
+                                {
+                                    label: 'Threads',
+                                    data: data.threadCount,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                }
+                            }
+                        }
+                    }));
+            });
+    }
+    
+</script>
