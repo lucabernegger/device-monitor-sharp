@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DeviceMonitor.DeviceInfo;
 using DeviceMonitor.Helpers;
@@ -71,9 +72,14 @@ namespace DeviceMonitor.Platforms
         private CpuInfo GetCpu()
         {
             var output = ShellHelper.Bash("top -bn1 | grep load | awk '{printf \"%.2f%%\\t\\t\\n\", $(NF-2)}'");
+            var lines = ShellHelper.TryReadFileLines("/proc/cpuinfo");
+            var coreCountRegex = new Regex(@"^cpu cores\s+:\s+(.+)");
+
+            var cpuCoresString = (lines.FirstOrDefault(o => coreCountRegex.Match(o).Success) ?? string.Empty);
             return new()
             {
                 TotalPercentage = Convert.ToDouble(output.Replace("%", string.Empty)),
+                NumberOfCores = Convert.ToUInt32(coreCountRegex.Match(cpuCoresString).Groups[1].Value)
             };
         }
 

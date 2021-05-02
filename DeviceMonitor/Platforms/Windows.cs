@@ -109,16 +109,20 @@ namespace DeviceMonitor.Platforms
             var threadCount = Convert.ToInt32(ShellHelper.Powershell("(Get-Process|Select-Object -ExpandProperty Threads).Count").Trim());
             var lines = output.Split(Environment.NewLine);
             using ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
+            var col = mos.Get();
+            var mo = col.OfType<ManagementObject>().FirstOrDefault();
             return new()
             {
                 TotalPercentage = Convert.ToDouble(lines[1]),
                 TotalThreads = threadCount,
+                NumberOfCores = GetPropertyValue<uint>(mo["NumberOfCores"]),
                 CpuCores = GetCpuCores().ToList()
             };
         }
         private IEnumerable<CpuCoreInfo> GetCpuCores()
         {
             using var mos = new ManagementObjectSearcher("SELECT * FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name != '_Total'");
+            
 
             foreach (var mo in mos.Get())
             {
