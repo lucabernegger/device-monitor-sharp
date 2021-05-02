@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -25,7 +26,7 @@ namespace DeviceMonitor.Platforms
             Memory = GetMemory();
             Network = GetNetwork();
         }
-
+        
         private NetworkInfo GetNetwork()
         {
             var tcpConnections = Convert.ToInt32(ShellHelper.Cmd("netstat -nao | find /i \"*\" /c"));
@@ -107,12 +108,36 @@ namespace DeviceMonitor.Platforms
             var output = ShellHelper.Cmd("wmic cpu get loadpercentage");
             var threadCount = Convert.ToInt32(ShellHelper.Powershell("(Get-Process|Select-Object -ExpandProperty Threads).Count").Trim());
             var lines = output.Split(Environment.NewLine);
-
+            using ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
             return new()
             {
                 TotalPercentage = Convert.ToDouble(lines[1]),
-                TotalThreads = threadCount
+                TotalThreads = threadCount,
+                CpuCores = GetCpuCores().ToList()
             };
+        }
+        private IEnumerable<CpuCoreInfo> GetCpuCores()
+        {
+            using var mos = new ManagementObjectSearcher("SELECT * FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name != '_Total'");
+
+            foreach (var mo in mos.Get())
+            {
+               
+                yield return  new()
+                {
+                    Name = GetPropertyString(mo["Name"]),
+                    PercentProcessorTime = GetPropertyValue<ulong>(mo["PercentProcessorTime"])
+                };
+            }
+
+        }
+        private string GetPropertyString(object obj)
+        {
+            return (obj is string str) ? str : string.Empty;
+        }
+        private T GetPropertyValue<T>(object obj) where T : struct
+        {
+            return (obj == null) ? default(T) : (T)obj;
         }
     }
 }

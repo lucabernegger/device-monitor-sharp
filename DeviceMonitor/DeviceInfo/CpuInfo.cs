@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace DeviceMonitor.DeviceInfo
@@ -10,6 +11,7 @@ namespace DeviceMonitor.DeviceInfo
         /// </summary>
         public double TotalPercentage { get; set; }
         public int TotalThreads { get; set; }
-
+        public int NumberOfCores { get; set; }
+        public List<CpuCoreInfo> CpuCores { get; set; }
     }
 }
