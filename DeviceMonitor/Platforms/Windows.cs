@@ -116,6 +116,7 @@ namespace DeviceMonitor.Platforms
                 TotalPercentage = Convert.ToDouble(lines[1]),
                 TotalThreads = threadCount,
                 NumberOfCores = GetPropertyValue<uint>(mo["NumberOfCores"]),
+                CurrentClockSpeed = GetPropertyValue<uint>(mo["CurrentClockSpeed"]),
                 CpuCores = GetCpuCores().ToList()
             };
         }

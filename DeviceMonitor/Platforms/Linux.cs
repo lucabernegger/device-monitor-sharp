@@ -74,12 +74,16 @@ namespace DeviceMonitor.Platforms
             var output = ShellHelper.Bash("top -bn1 | grep load | awk '{printf \"%.2f%%\\t\\t\\n\", $(NF-2)}'");
             var lines = ShellHelper.TryReadFileLines("/proc/cpuinfo");
             var coreCountRegex = new Regex(@"^cpu cores\s+:\s+(.+)");
-
             var cpuCoresString = (lines.FirstOrDefault(o => coreCountRegex.Match(o).Success) ?? string.Empty);
+
+            var clockSpeedRegex = new Regex(@"^cpu MHz\s+:\s+(.+)");
+            var clockSpeedString = (lines.FirstOrDefault(o => clockSpeedRegex.Match(o).Success) ?? string.Empty);
+
             return new()
             {
                 TotalPercentage = Convert.ToDouble(output.Replace("%", string.Empty)),
-                NumberOfCores = Convert.ToUInt32(coreCountRegex.Match(cpuCoresString).Groups[1].Value)
+                NumberOfCores = Convert.ToUInt32(coreCountRegex.Match(cpuCoresString).Groups[1].Value),
+                CurrentClockSpeed = Convert.ToUInt32(clockSpeedString)
             };
         }
 
