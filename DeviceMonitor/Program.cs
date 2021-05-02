@@ -16,10 +16,10 @@ namespace DeviceMonitor
         {
             await LoadSettings();
             var info = new SystemInfo();
-            info.UpdateData();
+            info.Update();
             var server = new Webserver(Settings.Url, () =>
             {
-                info.UpdateData();
+                info.Update();
                 var data = new WebResponse()
                 {
                     IsEncrypted = Settings.EncryptionEnabled,
