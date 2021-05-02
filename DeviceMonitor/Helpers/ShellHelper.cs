@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace DeviceMonitor.Helpers
 {
@@ -38,7 +40,7 @@ namespace DeviceMonitor.Helpers
 
         public static string Powershell(string cmd)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
                 FileName = @"powershell.exe",
                 Arguments = @cmd,
@@ -47,9 +49,22 @@ namespace DeviceMonitor.Helpers
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
-            Process process = new Process {StartInfo = startInfo};
+            var process = new Process {StartInfo = startInfo};
             process.Start();
             return process.StandardOutput.ReadToEnd();
         }
+
+        public static string[] TryReadFileLines(string path)
+        {
+            try
+            {
+                return File.ReadAllLines(path);
+            }
+            catch
+            {
+                return Array.Empty<string>();
+            }
+        }
+
     }
 }

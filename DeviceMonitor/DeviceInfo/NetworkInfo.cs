@@ -15,47 +15,6 @@ namespace DeviceMonitor.DeviceInfo
         /// </summary>
         public int TcpConnections { get; set; }
 
-        public static NetworkInfo Parse(NetworkInterface[] networkInterfaces,int tcpConnections)
-        {
-            var networkAdapters = new List<NetworkAdapter>();
-            
-            foreach (var networkInterface in networkInterfaces)
-            {
-                var ips = new List<Ip>();
-                foreach (var ip in networkInterface.GetIPProperties().UnicastAddresses)
-                {
-                    if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        
-                        ips.Add(new()
-                        {
-                              Address = ip.Address.ToString(),
-                        });
-                    }
-                }
-
-                var ipStats = networkInterface.GetIPStatistics();
-                networkAdapters.Add(new()
-                {
-                    BytesReceived = ipStats.BytesReceived,
-                    BytesSent = ipStats.BytesSent,
-                    IncomingErrors = ipStats.IncomingPacketsWithErrors,
-                    OutgoingErrors = ipStats.OutgoingPacketsWithErrors,
-                    OutgoingDiscarded = ipStats.OutgoingPacketsDiscarded,
-                    Description = networkInterface.Description,
-                    IsReceiveOnly = networkInterface.IsReceiveOnly,
-                    Name = networkInterface.Name,
-                    Ips = ips,
-                    TcpConnectionCount = tcpConnections
-                });
-            }
-
-            return new()
-            {
-                NetworkAdapters = networkAdapters,
-                TcpConnections = tcpConnections
-            };
-        }
     }
 
     public class Ip

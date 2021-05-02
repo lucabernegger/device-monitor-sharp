@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace DeviceMonitor.DeviceInfo
@@ -10,30 +11,8 @@ namespace DeviceMonitor.DeviceInfo
         /// </summary>
         public double TotalPercentage { get; set; }
         public int TotalThreads { get; set; }
-
-        public static CpuInfo Parse(string output,int totalThreads,OSPlatform os)
-        {
-            if (os == OSPlatform.Windows)
-            {
-                var lines = output.Split(Environment.NewLine);
-
-                return new()
-                {
-                    TotalPercentage = Convert.ToDouble(lines[1]),
-                    TotalThreads = totalThreads
-                };
-            }
-
-            if (os == OSPlatform.Linux)
-            {
-                return new()
-                {
-                    TotalPercentage = Convert.ToDouble(output.Replace("%", string.Empty))      ,
-                    TotalThreads = totalThreads
-                };
-            }
-
-            return null;
-        }
+        public uint NumberOfCores { get; set; }
+        public uint CurrentClockSpeed { get; set; }
+        public List<CpuCoreInfo> CpuCores { get; set; }
     }
 }
