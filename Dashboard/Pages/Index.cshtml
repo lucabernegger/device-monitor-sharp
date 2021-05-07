@@ -22,7 +22,6 @@
     var cpu2Ctx = document.getElementById('cpu2Chart').getContext('2d');
     var cpu3Ctx = document.getElementById('cpu3Chart').getContext('2d');
     var charts = []
-    var time = (Date.now() / 1000 - 600);
     loadCharts();
     setInterval(() => {
             loadCharts();
@@ -32,7 +31,7 @@
         charts.forEach((item) => {
             item.destroy();
         });
-        $.getJSON("/api/data/Memory/" + time + "/0",
+        $.getJSON("/api/data/Memory/",
             function (data) {
                charts.push(new Chart(memoryCtx,
                     {
@@ -75,7 +74,7 @@
                         }
                     }));
             });
-        $.getJSON("/api/data/Cpu/" + time + "/0",
+        $.getJSON("/api/data/Cpu/",
             function (data) {
                 charts.push(new Chart(cpu1Ctx,
                     {

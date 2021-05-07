@@ -11,7 +11,6 @@ namespace DeviceMonitor
     class Program
     {
         public static Settings Settings;
-        private static Timer _databaseTimer;
         static async Task Main()
         {
             await LoadSettings();
@@ -40,33 +39,8 @@ namespace DeviceMonitor
                     Data = info
                 }); 
             });
-            _databaseTimer = new Timer(Settings.StoreDatabaseInterval);
-            _databaseTimer.Start();
-            _databaseTimer.Elapsed += (sender, args) =>
-            {
-                if (Settings.EncryptionEnabled && Settings.EncryptionKey.Length > 0)
-                {
-                    var encrypted = StringCipher.Encrypt(info.GetAsJson(), Settings.EncryptionKey);
-                    Database.Add(new()
-                    {
-                        IsEncrypted = true,
-                        Data = encrypted,
-                        Time = DateTime.Now
-                    });
-                }
-                else
-                {
-                    Database.Add(new()
-                    {
-                        IsEncrypted = false,
-                        Data = info,
-                        Time = DateTime.Now
-                    });
-                }
-                
-            };
-            await server.Start();
 
+            await server.Start();
 
         }
 

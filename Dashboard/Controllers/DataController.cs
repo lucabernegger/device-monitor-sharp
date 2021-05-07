@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,19 +16,14 @@ namespace Dashboard.Controllers
     [ApiController]
     public class DataController : ControllerBase
     {
-        private readonly IMemoryCache _cache;
-        public DataController(IMemoryCache cache)
-        {
-            _cache = cache;
-        }
-        
         record GetMemoryResponse(double TotalMemory, List<string> Times,List<double>UsedMemory,List<double>UsedSwap);
-        [HttpGet("Memory/{timestamp}/{limit?}")]
-        public async Task<IActionResult> GetMemoryData(double timestamp, int limit)
+        [HttpGet("Memory")]
+        public async Task<IActionResult> GetMemoryData()
         {
-            List<WebResponse> list = await GetData(timestamp, limit);
+            var list = Startup.Data;
             if (list != null)
             {
+                
                 var timeList = list.Select(o => o.Time.ToShortTimeString());
                 var usedMemoryList = list.Select(o => ((Platform)o.Data).Memory.UsedMemory);
                 var usedSwapList = list.Select(o => ((Platform)o.Data).Memory.UsedSwap);
@@ -41,11 +37,11 @@ namespace Dashboard.Controllers
 
         record GetCpuResponse(List<string> Times, List<double> TotalPercentage, List<uint> ClockSpeed,
             List<int> ThreadCount);
-        [HttpGet("Cpu/{timestamp}/{limit?}")]
-        public async Task<IActionResult> GetCpuData(double timestamp, int limit)
+        [HttpGet("Cpu")]
+        public IActionResult GetCpuData()
         {
 
-            List<WebResponse> list = await GetData(timestamp, limit);
+            var list = Startup.Data;
             if (list != null)
             {
                 var timeList = list.Select(o => o.Time.ToShortTimeString()).ToList();
@@ -59,27 +55,6 @@ namespace Dashboard.Controllers
             return NoContent();
         }
 
-        private async Task<List<WebResponse>> GetData(double timestamp, int limit)
-        {
-            using var client = new HttpClient();
-            string json = await client.GetStringAsync($"http://localhost:8000?from={timestamp}&limit={limit}");
-            List<WebResponse> list = JsonConvert.DeserializeObject<List<WebResponse>>(json);
-            if (list != null)
-            {
-                foreach (var webResponse in list)
-                {
-                    if (webResponse.IsEncrypted)
-                    {
-                        webResponse.Data = JsonConvert.DeserializeObject<Platform>(
-                            StringCipher.Decrypt(webResponse.Data.ToString(), Startup.EncryptionKey));
-                    }
-                }
-
-                list.Reverse();
-                return list;
-            }
-
-            return null;
-        }
+        
     }
 }
