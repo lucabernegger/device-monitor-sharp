@@ -4,6 +4,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Timers;
+using DeviceMonitor.Models;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace DeviceMonitor
@@ -15,16 +17,13 @@ namespace DeviceMonitor
         static async Task Main()
         {
             await LoadSettings();
+            using var db = new ApplicationDbContext();
+            await db.Database.EnsureCreatedAsync();
             var info = new SystemInfo();
             info.Update();
             var server = new Webserver(Settings.Url, () =>
             {
                 info.Update();
-                var data = new WebResponse()
-                {
-                    IsEncrypted = Settings.EncryptionEnabled,
-                    Data = info.GetAsJson()
-                };
                 if (Settings.EncryptionEnabled && Settings.EncryptionKey.Length > 0)
                 {
                     var encrypted = StringCipher.Encrypt(info.GetAsJson(), Settings.EncryptionKey);
@@ -52,7 +51,7 @@ namespace DeviceMonitor
                         IsEncrypted = true,
                         Data = encrypted,
                         Time = DateTime.Now
-                    });
+                    });  
                 }
                 else
                 {
@@ -67,7 +66,6 @@ namespace DeviceMonitor
             };
             await server.Start();
 
-
         }
 
         static async Task LoadSettings()
@@ -80,7 +78,6 @@ namespace DeviceMonitor
             if (Settings != null && Settings.Url.Last() != '/')
             {
                 Settings.Url += "/";
-                await File.WriteAllTextAsync("settings.json", JsonConvert.SerializeObject(Settings, Formatting.Indented));
             }
 
             if (Settings is not null && Settings.EncryptionKey == null && Settings.EncryptionEnabled)
@@ -90,9 +87,9 @@ namespace DeviceMonitor
                 rng.GetBytes(tokenData);
                 Settings.EncryptionKey = Convert.ToBase64String(tokenData);
                 Console.WriteLine("[INFO] No encryptionkey was specified. A new key was generated: " + Settings.EncryptionKey);
-                await File.WriteAllTextAsync("settings.json", JsonConvert.SerializeObject(Settings, Formatting.Indented));
-
             }
+            await File.WriteAllTextAsync("settings.json", JsonConvert.SerializeObject(Settings, Formatting.Indented));
+
         }
     }
 }

@@ -36,8 +36,8 @@ namespace DeviceMonitor
                     var date = UnitConverterHelper.ConvertTimeStampToDateTime(
                         Convert.ToDouble(req.QueryString.Get("from")));
                     var limit = Convert.ToInt32(req.QueryString.Get("limit") ?? "-1");
-                    var results = Database.DataDataFromPastUntilNow(date, limit);
-                    data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(results));
+                   var results = Database.DataDataFromPastUntilNow(date, limit);
+                   data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(results));
                 }
                 else
                 {
