@@ -7,7 +7,7 @@ This project is in an very early stage of development, so some things are a bit 
 
 ## Settings
 
-Default settings:
+Default settings (Client):
 ```json
 {
   "Url": "http://localhost:8000/",
@@ -16,15 +16,25 @@ Default settings:
   "StoreDatabaseInterval": 10000
 }
 ```
+Default settings (Server):
+```json
+{
+  "Url": "http://localhost:8000/",
+  "EncryptionKey": null
+  "EncryptionEnabled": false,
+  "StoreDatabaseInterval": 10000,
+  "ConnectionString": null
+}
+```
+<b>You need to specify a connection string to your mysql/mariadb database </b>
+
 To enable encryption you can just set ``` EncryptionEnabled=true ``` in the settings.json file. This will generate a custom key for you on the next restart.
 
 <b>If you activate encryption later, all data until activation will be saved unencrypted in the database, and could so be possibly get sent by the webserver unencypted!</b>
 ## Data-Access
 You can acces the data via a simple http-request to the url specified in your settings.
-#### Possible query parameters
-- ``` from ```: UNIX-Timestamp from which date until now you want the data (sorted from newest to oldest)
-- ``` limit ```: You can specify a limit on how much entries you want to get returned (sorted from newest to oldest)
 
 ## Opensource Projects used
-- LiteDB
+- EntityFrameworkCore
+- Mysql.EntityFrameworkCore
 - Newtonsoft.JSON
