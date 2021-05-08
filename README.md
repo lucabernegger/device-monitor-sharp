@@ -20,7 +20,7 @@ Default settings (Server):
 ```json
 {
   "Url": "http://localhost:8000/",
-  "EncryptionKey": null
+  "EncryptionKey": null,
   "EncryptionEnabled": false,
   "StoreDatabaseInterval": 10000,
   "ConnectionString": null
