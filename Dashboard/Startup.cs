@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Dashboard.Platforms;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dashboard
 {
@@ -79,7 +80,9 @@ namespace Dashboard
                         }
                         else
                         {
-                            response.Data = JsonConvert.DeserializeObject<Platform>(JsonConvert.SerializeObject(response.Data));
+                           
+                            response.Data = JsonConvert.DeserializeObject<Platform>(response.Data.ToString() ?? string.Empty);
+          
                         }
                         Data.Add(response);
 

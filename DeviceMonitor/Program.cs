@@ -36,7 +36,7 @@ namespace DeviceMonitor
                 return JsonConvert.SerializeObject(new WebResponse()
                 {
                     IsEncrypted = false,
-                    Data = info
+                    Data = info.GetAsJson()
                 }); 
             });
 
