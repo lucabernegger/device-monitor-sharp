@@ -3,7 +3,7 @@ Simple .NET 5 console Application to get some basic system information like CPU 
 This project is in an very early stage of development, so some things are a bit hacky currently.
 
 ## Todo
-- Implment more data
+- Implement more data
 
 ## Settings
 
