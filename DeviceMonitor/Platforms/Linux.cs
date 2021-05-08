@@ -71,18 +71,33 @@ namespace DeviceMonitor.Platforms
         {
             var output = ShellHelper.Bash("top -bn1 | grep load | awk '{printf \"%.2f%%\\t\\t\\n\", $(NF-2)}'");
             var lines = ShellHelper.TryReadFileLines("/proc/cpuinfo");
-            var coreCountRegex = new Regex(@"^cpu cores\s+:\s+(.+)");
+            var coreCountRegex = new Regex(@"^cpu cores\s+:\s+(.+)",RegexOptions.IgnoreCase);
             var cpuCoresString = (lines.FirstOrDefault(o => coreCountRegex.Match(o).Success) ?? string.Empty);
 
-            var clockSpeedRegex = new Regex(@"^cpu MHz\s+:\s+(.+)");
+            var clockSpeedRegex = new Regex(@"^cpu MHz\s+:\s+(.+)", RegexOptions.IgnoreCase);
             var clockSpeedString = (lines.FirstOrDefault(o => clockSpeedRegex.Match(o).Success) ?? string.Empty);
 
-            return new()
-            {
-                TotalPercentage = Convert.ToDouble(output.Replace("%", string.Empty)),
-                NumberOfCores = Convert.ToUInt32(coreCountRegex.Match(cpuCoresString).Groups[1].Value),
-                CurrentClockSpeed = Convert.ToUInt32(clockSpeedString)
-            };
+            var index = clockSpeedString.IndexOf('.');
+            if (index != -1)
+                clockSpeedString = clockSpeedString.Substring(0, index);
+            var cpu = new CpuInfo();
+
+              if (double.TryParse(output.Replace("%", string.Empty), out var totalPercentage))
+              {
+                  cpu.TotalPercentage = totalPercentage;
+              }
+
+              if (int.TryParse(coreCountRegex.Match(cpuCoresString).Groups[1].Value, out var cpuCores))
+              {
+                  cpu.NumberOfCores = cpuCores;
+              }
+
+              if (int.TryParse(clockSpeedRegex.Match(clockSpeedString).Groups[1].Value, out var clockSpeed))
+              {
+                  cpu.CurrentClockSpeed = clockSpeed;
+              }
+              
+            return cpu;
         }
 
         private NetworkInfo GetNetwork()

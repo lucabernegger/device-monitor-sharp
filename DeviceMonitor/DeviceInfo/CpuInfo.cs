@@ -9,8 +9,8 @@ namespace DeviceMonitor.DeviceInfo
         /// </summary>
         public double TotalPercentage { get; set; }
         public int TotalThreads { get; set; }
-        public uint NumberOfCores { get; set; }
-        public uint CurrentClockSpeed { get; set; }
+        public int NumberOfCores { get; set; }
+        public int CurrentClockSpeed { get; set; }
         public List<CpuCoreInfo> CpuCores { get; set; }
     }
 }
