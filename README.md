@@ -4,7 +4,6 @@ This project is in an very early stage of development, so some things are a bit 
 
 ## Todo
 - Implment more data
-- Website to display json data?
 
 ## Settings
 
