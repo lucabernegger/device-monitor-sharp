@@ -33,7 +33,7 @@ To enable encryption you can just set ``` EncryptionEnabled=true ``` in the sett
 ## Data-Access
 You can acces the data via a simple http-request to the url specified in your settings.
 
-## Opensource Projects used
+## Libraries Projects used
 - EntityFrameworkCore
 - Mysql.EntityFrameworkCore
 - Newtonsoft.JSON
