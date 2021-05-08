@@ -74,9 +74,10 @@ namespace DeviceMonitor.Platforms
             var lines = output.Trim().Split(Environment.NewLine);
             var freeMemoryParts = lines[0].Split("=", StringSplitOptions.RemoveEmptyEntries);
             var totalMemoryParts = lines[1].Split("=", StringSplitOptions.RemoveEmptyEntries);
-
-            var total = Math.Round(double.Parse(totalMemoryParts[1]) / 1024, 0);
-            var free = Math.Round(double.Parse(freeMemoryParts[1]) / 1024, 0);
+            double.TryParse(totalMemoryParts[1],out var totalMem);
+            double.TryParse(freeMemoryParts[1],out var freeMem);
+            var total = Math.Round(totalMem / 1024, 0);
+            var free = Math.Round(freeMem / 1024, 0);
             var used = total - free;
             return new()
             {
