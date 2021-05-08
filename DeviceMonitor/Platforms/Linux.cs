@@ -69,7 +69,7 @@ namespace DeviceMonitor.Platforms
 
         private CpuInfo GetCpu()
         {
-            var output = ShellHelper.Bash("top -bn1 | grep load | awk '{printf \"%.2f%%\\t\\t\\n\", $(NF-2)}'");
+            var output = ShellHelper.Bash("top -bn1 | grep \"Cpu(s)\" | sed \"s/.*, *\\([0-9.]*\\)%* id.*/\\1/\" |  awk '{print 100 - $1}'");
             var lines = ShellHelper.TryReadFileLines("/proc/cpuinfo");
             var coreCountRegex = new Regex(@"^cpu cores\s+:\s+(.+)",RegexOptions.IgnoreCase);
             var cpuCoresString = (lines.FirstOrDefault(o => coreCountRegex.Match(o).Success) ?? string.Empty);
