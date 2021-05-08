@@ -4,8 +4,6 @@ using System.Linq;
 using System.Management;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using DeviceMonitor.DeviceInfo;
 using DeviceMonitor.Helpers;
 
@@ -92,12 +90,14 @@ namespace DeviceMonitor.Platforms
         {
             foreach (var drive in System.IO.DriveInfo.GetDrives())
             {
+                var size = Math.Round((double) drive.TotalSize / 1000000000);
+                var available = Math.Round((double)drive.AvailableFreeSpace / 1000000000);
                 yield return new()
                 {
                     Identifier = drive.VolumeLabel,
-                    Available = Math.Round((double)drive.AvailableFreeSpace / 1000000000),
-                    Size = Math.Round((double)drive.TotalSize / 1000000000),
-                    Used = drive.TotalSize - drive.AvailableFreeSpace,
+                    Available = available,
+                    Size = size,
+                    Used = size - available,
                     UsedPercentage = Math.Round(((double)(drive.TotalSize - drive.AvailableFreeSpace) / drive.TotalSize) / 1048576D)
                 };
             }
