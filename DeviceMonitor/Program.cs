@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using System.Timers;
 using Newtonsoft.Json;
 
 namespace DeviceMonitor
@@ -19,11 +18,6 @@ namespace DeviceMonitor
             var server = new Webserver(Settings.Url, () =>
             {
                 info.Update();
-                var data = new WebResponse()
-                {
-                    IsEncrypted = Settings.EncryptionEnabled,
-                    Data = info.GetAsJson()
-                };
                 if (Settings.EncryptionEnabled && Settings.EncryptionKey.Length > 0)
                 {
                     var encrypted = StringCipher.Encrypt(info.GetAsJson(), Settings.EncryptionKey);
@@ -36,7 +30,7 @@ namespace DeviceMonitor
                 return JsonConvert.SerializeObject(new WebResponse()
                 {
                     IsEncrypted = false,
-                    Data = info.GetAsJson()
+                    Data = info.Platform
                 }); 
             });
 

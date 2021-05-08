@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-
-namespace Dashboard.DeviceInfo
+﻿namespace Dashboard.DeviceInfo
 {
     public class DriveInfo
     {

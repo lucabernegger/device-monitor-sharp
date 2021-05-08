@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-namespace Dashboard.DeviceInfo
+﻿namespace Dashboard.DeviceInfo
 {
     public class MemoryInfo
     {

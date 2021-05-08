@@ -29,15 +29,11 @@ namespace DeviceMonitor
         }
         public void Update()
         {
-            if (LastDataUpdate.AddMilliseconds(Program.Settings.StoreDatabaseInterval) < DateTime.Now)
-            {
-                Platform.UpdateData();
-                LastDataUpdate = DateTime.Now;
-            }
+            Platform.UpdateData();
+            LastDataUpdate = DateTime.Now;
         }
         public string GetAsJson()
         {
-            Update();
             return JsonConvert.SerializeObject(Platform);
         }
     }

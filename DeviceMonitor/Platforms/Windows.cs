@@ -4,8 +4,6 @@ using System.Linq;
 using System.Management;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using DeviceMonitor.DeviceInfo;
 using DeviceMonitor.Helpers;
 

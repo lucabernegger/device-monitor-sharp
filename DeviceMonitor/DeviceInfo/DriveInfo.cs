@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DeviceMonitor.Helpers;
-using Newtonsoft.Json.Linq;
-
-namespace DeviceMonitor.DeviceInfo
+﻿namespace DeviceMonitor.DeviceInfo
 {
     public class DriveInfo
     {

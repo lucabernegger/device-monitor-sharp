@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+using Dashboard.Models;
 using Dashboard.Platforms;
-using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
 namespace Dashboard.Controllers
@@ -16,15 +12,25 @@ namespace Dashboard.Controllers
     [ApiController]
     public class DataController : ControllerBase
     {
+        private readonly ApplicationDbContext _db;
+        public DataController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
         record GetMemoryResponse(double TotalMemory, IEnumerable<string> Times, IEnumerable<double>UsedMemory, IEnumerable<double>UsedSwap);
         [HttpGet("Memory")]
         public IActionResult GetMemoryData()
         {
-            var list = Startup.Data;
-            if (list is not null)
+            var date = DateTime.Now.AddMinutes(-10);
+            var dblist = _db.Saveds.Where(o=>o.Time > date).ToList();
+            var list = dblist.Select(o => new WebResponse()
             {
-                
-               var timeList = list.Select(o => o.Time.ToShortTimeString());
+                Data = JsonConvert.DeserializeObject<Platform>(o.Data.ToString()),
+                Time = o.Time
+            }).ToList();
+            if (list.Any())
+            {
+                var timeList = list.Select(o => o.Time.ToShortTimeString());
                 var usedMemoryList = list.Select(o => ((Platform)o.Data).Memory.UsedMemory);
                 var usedSwapList = list.Select(o => ((Platform)o.Data).Memory.UsedSwap);
                 var totalMemory = Math.Round((list.FirstOrDefault()?.Data is Platform p ? p.Memory.TotalMemory : 0) / 1000) * 1000;
@@ -40,9 +46,14 @@ namespace Dashboard.Controllers
         [HttpGet("Cpu")]
         public IActionResult GetCpuData()
         {
-
-            var list = Startup.Data;
-            if (list is not null)
+            var date = DateTime.Now.AddMinutes(-10);
+            var dblist = _db.Saveds.Where(o => o.Time > date).ToList();
+            var list = dblist.Select(o => new WebResponse()
+            {
+                Data = JsonConvert.DeserializeObject<Platform>(o.Data.ToString()),
+                Time = o.Time
+            }).ToList();
+            if (list.Any())
             {
                 var timeList = list.Select(o => o.Time.ToShortTimeString());
                 var totalPercentageList = list.Select(o => ((Platform)o.Data).Cpu.TotalPercentage);
